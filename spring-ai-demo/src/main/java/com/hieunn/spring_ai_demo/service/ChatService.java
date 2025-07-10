@@ -1,6 +1,9 @@
 package com.hieunn.spring_ai_demo.service;
 
+import com.hieunn.spring_ai_demo.mode.BillItem;
 import com.hieunn.spring_ai_demo.mode.ChatRequest;
+import com.hieunn.spring_ai_demo.mode.ExpenseInfo;
+import com.hieunn.spring_ai_demo.mode.FilmInfo;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -9,9 +12,12 @@ import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.content.Media;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public class ChatService {
@@ -22,7 +28,7 @@ public class ChatService {
         chatClient = builder.build();
     }
 
-    public String chatImage(MultipartFile file, String message) {
+    public List<BillItem> chatImage(MultipartFile file, String message) {
         Media media = Media.builder()
                 .mimeType(MimeTypeUtils.parseMimeType(file.getContentType()))
                 .data(file.getResource())
@@ -38,10 +44,11 @@ public class ChatService {
                 .user(promptUserSpec -> promptUserSpec.media(media)
                         .text(message))
                 .call()
-                .content();
+                .entity(new ParameterizedTypeReference<List<BillItem>>() {
+                });
     }
 
-    public String chat(ChatRequest chatRequest) {
+    public ExpenseInfo chat(ChatRequest chatRequest) {
         SystemMessage systemMessage = new SystemMessage("""
                 You are HieuNN.AI
                 """);
@@ -53,6 +60,6 @@ public class ChatService {
         return chatClient
                 .prompt(prompt)
                 .call()
-                .content();
+                .entity(ExpenseInfo.class);
     }
 }
