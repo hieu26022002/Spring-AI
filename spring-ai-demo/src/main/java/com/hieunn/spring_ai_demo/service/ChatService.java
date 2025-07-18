@@ -3,15 +3,12 @@ package com.hieunn.spring_ai_demo.service;
 import com.hieunn.spring_ai_demo.mode.BillItem;
 import com.hieunn.spring_ai_demo.mode.ChatRequest;
 import com.hieunn.spring_ai_demo.mode.ExpenseInfo;
-import com.hieunn.spring_ai_demo.mode.FilmInfo;
-import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.content.Media;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
@@ -48,7 +45,7 @@ public class ChatService {
                 });
     }
 
-    public ExpenseInfo chat(ChatRequest chatRequest) {
+    public String chat(ChatRequest chatRequest) {
         SystemMessage systemMessage = new SystemMessage("""
                 You are HieuNN.AI
                 """);
@@ -60,6 +57,6 @@ public class ChatService {
         return chatClient
                 .prompt(prompt)
                 .call()
-                .entity(ExpenseInfo.class);
+                .content();
     }
 }
